@@ -1,10 +1,10 @@
 var CACHE_NAME = 'myapp-cache-v1.0';
 
 var urlsToCache = [
-  '/',
-  '/style.css',
-  '/js/app.js',
-  '/js/online.js'
+  '/todo_offline/',
+  '/todo_offline/style.css',
+  '/todo_offline/js/app.js',
+  '/todo_offline/js/online.js'
 ]
 
 if ('serviceWorker' in navigator) {
