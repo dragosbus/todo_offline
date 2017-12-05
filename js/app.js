@@ -11,50 +11,67 @@ function createEl(element, type, value, myClass) {
   return el;
 }
 
+function edit(btn, li) {
+  let p = li.querySelector('p');
+  let input = createEl('input', 'type', 'text', 'edit-input');
+  input.value = p.textContent;
+  li.insertBefore(input, p);
+  li.removeChild(p);
+  btn.textContent = 'Save';
+}
+
+function save(btn, li) {
+  let input = li.querySelector('input');
+  let p = createEl('p', 'textContent', input.value, 'task-text');
+  li.insertBefore(p, input);
+  li.removeChild(input);
+  btn.textContent = 'Edit'
+}
+
 function createLi(text) {
   let li = createEl('li');
-  let textLi = createEl('p', 'textContent', text);
+  let textLi = createEl('p', 'textContent', text, 'task-text');
   let editBtn = createEl('button', 'textContent', 'Edit', 'edit');
   let removeBtn = createEl('button', 'textContent', 'Remove', 'remove');
-  
+
   li.appendChild(textLi);
   li.appendChild(editBtn);
   li.appendChild(removeBtn);
-  task.appendChild(li);
+
+  return li;
 }
 
 form.addEventListener('submit', e => {
   e.preventDefault();
   let text = value.value;
-  createLi(text);
+  let li = createLi(text);
   localStorage.setItem(localStorage.length, text);
+  task.appendChild(li);
 });
 
 task.addEventListener('click', e => {
-  let target = e.target;
-  if (target.tagName === 'BUTTON') {
+  if (e.target.tagName === 'BUTTON') {
+    let target = e.target;
     let li = target.parentNode;
-    if (target.textContent === 'Edit') {
-      let p = li.querySelector('p');
-      let inputEdit = createEl('input', 'type', 'text');
-      inputEdit.value = p.textContent;
-      li.insertBefore(inputEdit,p);
-      li.removeChild(p);
-      target.textContent = 'Save';
-    } else if (target.textContent === 'Remove') {
-
-    } else if(target.textContent === 'Save') {
-      let inputEdited = li.querySelector('input');
-      let p = createEl('p','textContent',inputEdited.value);
-      li.insertBefore(p,inputEdited);
-      li.removeChild(inputEdited);
-      target.textContent = 'Edit';
+    let tasks = document.querySelectorAll('li');
+    if (target.textContent === 'Remove') {
+      task.removeChild(li);
+      localStorage.clear();
+    } else if (target.textContent === 'Edit') {
+      edit(target, li);
+    } else if (target.textContent === 'Save') {
+      save(target, li);
+      for (let i = 0; i < tasks.length; i++) {
+        if (tasks[i] === li) {
+          localStorage[i] = tasks[i].querySelector('p').textContent;
+        }
+      }
     }
   }
 });
-
 document.addEventListener('DOMContentLoaded', () => {
   for (let i = 0; i < localStorage.length; i++) {
-    createLi(localStorage[i]);
+    let li = createLi(localStorage.getItem(i));
+    task.appendChild(li);
   }
 });
